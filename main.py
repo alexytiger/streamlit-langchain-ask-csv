@@ -180,10 +180,24 @@ def get_csv_agent(csv_file):
     # If the file already exists, 
     # it gets truncated (i.e., its previous contents get deleted). 
     # Then, the new incoming data will be written to the file.
+    
+    # about using 'with' keyword
+    # The primary advantage of using with is that when you're done with the file operations 
+    # and exit the with block, Python automatically closes the file.
+    # No need to call out_file.close(). 
+    # This ensures that the cleanup is done for you, 
+    # even if errors occur within the with block.
+    #In summary, the with statement is a way Python offers to guarantee that clean-up tasks specified
+    # in its context are executed no matter how the block is exited.
+    # Here, it guarantees that the file out_file is closed when it is no longer needed.
+    
     with open(file_location, 'wb') as out_file:
         out_file.write(csv_file.getbuffer())
     
     llm = OpenAI(temperature=0)
+    
+    # raise Exception('Test exception')  #just for testing
+    
     agent = create_csv_agent(llm, file_location)
     return agent
     
@@ -244,12 +258,23 @@ def main():
         
         #If you don't specify an agent type, the default agent will be ZERO_SHOT_REACT_DESCRIPTION. 
         # This agent type is used to generate text descriptions of CSV file
+         # Interesting!
+        # Streamlit runs as a continuous service listening for events (like button clicks or file uploads). 
+        # When an event is detected, Streamlit reruns your script from top to bottom.
+        #If an exception occurs in the get_csv_agent(csv_file) call and triggers the return statement, 
+        # only the main() function halts. However, Streamlit doesn't terminate; 
+        # instead, it waits for new events and reruns the script when they occur.
+        # So in short, in Streamlit, the return will stop the main() function, 
+        # but the application will continue to be responsive to further inputs/events.
         try:
             agent = get_csv_agent(csv_file)
         except Exception as e:
             st.error(f"An error occurred while trying to create CSV agent: {str(e)}")
             # The following line ends the execution of the function and avoids further errors.
+            # we exit from there as nothing to can do because our agent is broken
+            # we will see the error, but our web app will continue running
             return
+        
         
         user_question = st.text_input("Ask a question about your CSV: ")
 
