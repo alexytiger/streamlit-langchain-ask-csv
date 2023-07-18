@@ -172,6 +172,15 @@ import base64
 
 def get_csv_agent(csv_file):
     
+    # Check if 'last_file' is in the session state
+    if 'last_file' in st.session_state:
+        try:
+            os.remove(st.session_state['last_file'])  # delete the previous file
+            print(f"Deleted old file: {st.session_state['last_file']}")  # optional, for debugging
+        except OSError as e:
+            print("Error while deleting old file: ", str(e))  # handle errors
+ 
+
     file_location = f"./{csv_file.name}"
 
     # Write out the file data
@@ -194,6 +203,9 @@ def get_csv_agent(csv_file):
     with open(file_location, 'wb') as out_file:
         out_file.write(csv_file.getbuffer())
     
+     # update the last file location
+    st.session_state['last_file'] = file_location
+    
     llm = OpenAI(temperature=0)
     
     # raise Exception('Test exception')  #just for testing
@@ -201,7 +213,6 @@ def get_csv_agent(csv_file):
     agent = create_csv_agent(llm, file_location)
     return agent
     
-
 
 def get_image_base64(image_path):
     with open(image_path, "rb") as img_file:
