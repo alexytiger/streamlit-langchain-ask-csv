@@ -167,6 +167,7 @@ from langchain.agents.agent_types import AgentType
 from dotenv import load_dotenv
 import os
 import streamlit as st
+from streamlit_extras.add_vertical_space import add_vertical_space
 from htmlTemplates import css, bot_template
 import base64
 
@@ -242,7 +243,21 @@ def main():
     st.set_page_config(page_title="Ask your CSV", page_icon="📚")
     st.write(css, unsafe_allow_html=True)
 
-    st.header("Ask your CSV 🐶🐯")
+    st.header("Ask your CSV")
+    
+    # Sidebar contents
+    with st.sidebar:
+        st.title('LLM Chat App 🐶🐯')
+        st.markdown('''
+        ## About
+        This app is an LLM-powered chatbot built using:
+        - [Streamlit](https://streamlit.io/)
+        - [LangChain](https://python.langchain.com/)
+        - [OpenAI](https://platform.openai.com/docs/models)
+        - [CSV Agent](https://python.langchain.com/docs/modules/agents/toolkits/csv)
+        ''')
+        add_vertical_space(4)
+        st.write('Made by **Bad Tiger**')
     
     csv_file = st.file_uploader("Upload a CSV file", type="csv")
 
