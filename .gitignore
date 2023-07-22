@@ -161,3 +161,4 @@ cython_debug/
 /localenv
 /UNRATE.csv
 states.csv
+just-for-test.csv

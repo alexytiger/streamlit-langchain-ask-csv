@@ -251,6 +251,7 @@ def main():
         
         st.subheader("About")
    
+        # Markdown Hyperlinks: [Link Text](URL) is the syntax to create a hyperlink in Markdown.
         st.write("""
         This app is an LLM-powered chatbot built using:
         - [Streamlit](https://streamlit.io/)
@@ -261,7 +262,7 @@ def main():
         
         for _ in range(4):
             st.write("\n")
-        st.markdown('<b>Made by Bad Tiger</b>', unsafe_allow_html=True)
+        st.markdown('<b>Made by @Bad Tiger</b>', unsafe_allow_html=True)
     
     csv_file = st.file_uploader("Upload a CSV file", type="csv")
 
