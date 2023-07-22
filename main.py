@@ -166,6 +166,7 @@ from langchain.chat_models import ChatOpenAI
 from langchain.agents.agent_types import AgentType
 from dotenv import load_dotenv
 import os
+import io
 import streamlit as st
 from streamlit_extras.add_vertical_space import add_vertical_space
 from htmlTemplates import css, bot_template
@@ -262,61 +263,78 @@ def main():
     csv_file = st.file_uploader("Upload a CSV file", type="csv")
 
 
-    if csv_file is not None:
-
+    if isinstance(csv_file, io.IOBase):
         file_name = csv_file.name
         print('csv_file', file_name)
-
+    else:
+        print("'csv_file' is not a file object")
+        st.write("No file uploaded!") 
+        return
+    
+    
+    
 # important to understand that agent is generating a corresponding python code in memory and running this code by itself
 # t get the answer for the question we are asking
 # verbose=True is good as it will show in the terminal how our model is thinking       
-        
-       # Version 2 using ChatOpenAI model
-        #llm = ChatOpenAI(temperature=0, model="gpt-4")
-        #agent = create_csv_agent(
-        #    llm,
-        #    file_name,
-        #    verbose=True,
-        #    agent_type=AgentType.OPENAI_FUNCTIONS,)
-       
-       #Version 1 using OpenAI
-        #llm = OpenAI(temperature=0)
-        
-        #If you don't specify an agent type, the default agent will be ZERO_SHOT_REACT_DESCRIPTION. 
-        # This agent type is used to generate text descriptions of CSV file
-         # Interesting!
-        # Streamlit runs as a continuous service listening for events (like button clicks or file uploads). 
-        # When an event is detected, Streamlit reruns your script from top to bottom.
-        #If an exception occurs in the get_csv_agent(csv_file) call and triggers the return statement, 
-        # only the main() function halts. However, Streamlit doesn't terminate; 
-        # instead, it waits for new events and reruns the script when they occur.
-        # So in short, in Streamlit, the return will stop the main() function, 
-        # but the application will continue to be responsive to further inputs/events.
-        try:
-            agent = get_csv_agent(csv_file)
-        except Exception as e:
-            st.error(f"An error occurred while trying to create CSV agent: {str(e)}")
-            # The following line ends the execution of the function and avoids further errors.
-            # we exit from there as nothing to can do because our agent is broken
-            # we will see the error, but our web app will continue running
-            return
-        
-        
-        user_question = st.text_input("Ask a question about your CSV: ")
+    
+    # Version 2 using ChatOpenAI model
+    #llm = ChatOpenAI(temperature=0, model="gpt-4")
+    #agent = create_csv_agent(
+    #    llm,
+    #    file_name,
+    #    verbose=True,
+    #    agent_type=AgentType.OPENAI_FUNCTIONS,)
+    
+    #Version 1 using OpenAI
+    #llm = OpenAI(temperature=0)
+    
+    #If you don't specify an agent type, the default agent will be ZERO_SHOT_REACT_DESCRIPTION. 
+    # This agent type is used to generate text descriptions of CSV file
+        # Interesting!
+    # Streamlit runs as a continuous service listening for events (like button clicks or file uploads). 
+    # When an event is detected, Streamlit reruns your script from top to bottom.
+    #If an exception occurs in the get_csv_agent(csv_file) call and triggers the return statement, 
+    # only the main() function halts. However, Streamlit doesn't terminate; 
+    # instead, it waits for new events and reruns the script when they occur.
+    # So in short, in Streamlit, the return will stop the main() function, 
+    # but the application will continue to be responsive to further inputs/events.
+    try:
+        agent = get_csv_agent(csv_file)
+    except Exception as e:
+        st.error(f"An error occurred while trying to create CSV agent: {str(e)}")
+        # The following line ends the execution of the function and avoids further errors.
+        # we exit from there as nothing to can do because our agent is broken
+        # we will see the error, but our web app will continue running
+        return
+    
+    
+    user_question = st.text_input("Ask a question about your CSV: ")
 
-        if user_question is not None and user_question != "":
-            with st.spinner(text="In progress..."):
-                if agent is not None:
-                    try:
-                        response = agent.run(user_question)
-                        st.write(bot_message.replace(
-                            "{{MSG}}", response), unsafe_allow_html=True)
-                    except Exception as e:
-                        st.error("An error occurred: {}".format(str(e)))
-                else:
-                    st.write("No corresponding agent!")
-    else:
-        st.write("No file uploaded!") 
+# The st.spinner seems to be a Streamlit function. 
+# The with block here ensures that the spinner (which is probably a loading indicator) 
+# starts before the code within the block executes 
+# and automatically stops when the code inside the block finishes execution.
+
+# So while the bot is processing the user's question (agent.run(user_question)), 
+# the "In progress..." spinner will show up on the screen. 
+# As soon as the question has been processed, the spinner disappears.
+
+# This way, by using the with statement, 
+# you don't need to manually handle the starting and stopping of the spinner, 
+# making your code cleaner and less prone to errors.
+
+    if user_question is not None and user_question != "":
+        with st.spinner(text="In progress..."):
+            if agent is not None:
+                try:
+                    response = agent.run(user_question)
+                    st.write(bot_message.replace(
+                        "{{MSG}}", response), unsafe_allow_html=True)
+                except Exception as e:
+                    st.error("An error occurred: {}".format(str(e)))
+            else:
+                st.write("No corresponding agent!")
+
 
 # def main():
 #     print("Hello world!")
