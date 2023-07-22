@@ -168,7 +168,6 @@ from dotenv import load_dotenv
 import os
 import io
 import streamlit as st
-from streamlit_extras.add_vertical_space import add_vertical_space
 from htmlTemplates import css, bot_template
 import base64
 
@@ -249,16 +248,20 @@ def main():
     # Sidebar contents
     with st.sidebar:
         st.title('LLM Chat App 🐶🐯')
-        st.markdown('''
-        ## About
+        
+        st.subheader("About")
+   
+        st.write("""
         This app is an LLM-powered chatbot built using:
         - [Streamlit](https://streamlit.io/)
         - [LangChain](https://python.langchain.com/)
         - [OpenAI](https://platform.openai.com/docs/models)
         - [CSV Agent](https://python.langchain.com/docs/modules/agents/toolkits/csv)
-        ''')
-        add_vertical_space(4)
-        st.write('Made by **Bad Tiger**')
+        """)
+        
+        for _ in range(4):
+            st.write("\n")
+        st.markdown('<b>Made by Bad Tiger</b>', unsafe_allow_html=True)
     
     csv_file = st.file_uploader("Upload a CSV file", type="csv")
 
