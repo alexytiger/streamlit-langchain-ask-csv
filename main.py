@@ -262,7 +262,7 @@ def main():
         - [CSV Agent](https://python.langchain.com/docs/modules/agents/toolkits/csv)
         """)
         
-        robot_tiger = Image.open(r'img\ai-tiger-robot.jpeg')
+        robot_tiger = Image.open('img/ai-tiger-robot.jpeg')
         st.image(robot_tiger)
       
         
