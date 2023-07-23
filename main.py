@@ -170,6 +170,8 @@ import io
 import streamlit as st
 from htmlTemplates import css, bot_template
 import base64
+from PIL import Image
+
 
 def get_csv_agent(csv_file):
     
@@ -219,7 +221,7 @@ def get_image_base64(image_path):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode('utf-8')
 
-image_path = 'img/chat-robot.png'  # replace with your actual image path
+image_path = 'img/ai-robot-2.jpg'  # replace with your actual image path
 image_base64 = get_image_base64(image_path)
 
 bot_message = bot_template.replace("{{IMAGE}}", f'data:image/png;base64,{image_base64}')
@@ -259,6 +261,10 @@ def main():
         - [OpenAI](https://platform.openai.com/docs/models)
         - [CSV Agent](https://python.langchain.com/docs/modules/agents/toolkits/csv)
         """)
+        
+        robot_tiger = Image.open(r'img\ai-tiger-robot.jpeg')
+        st.image(robot_tiger)
+      
         
         for _ in range(4):
             st.write("\n")
