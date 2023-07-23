@@ -242,14 +242,14 @@ def main():
 # Here, page_title="Ask your CSV" changes the default page title from "Streamlit" to "Ask your CSV".
 # The browser tab reflects this change.
 # It's the first thing that runs when a Streamlit app starts up.
-    st.set_page_config(page_title="Ask your CSV", page_icon="📚")
+    st.set_page_config(page_title="Ask your CSV", page_icon="🐯")
     st.write(css, unsafe_allow_html=True)
 
     st.header("Ask your CSV")
     
     # Sidebar contents
     with st.sidebar:
-        st.title('LLM Chat App 🐶🐯')
+        st.title('LLM Chat App')
         
         st.subheader("About")
    
